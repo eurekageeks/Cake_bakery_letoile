@@ -1,3 +1,4 @@
+import os
 from typing import List, Union
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -42,8 +43,8 @@ class Settings(BaseSettings):
         raise ValueError(v)
 
     # Database (PostgreSQL in Docker/Prod, SQLite in Local Dev fallback)
-    DATABASE_URL: str = "sqlite+aiosqlite:///./bakery.db"
-    DATABASE_SYNC_URL: str = "sqlite:///./bakery.db"
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:////tmp/bakery.db" if os.getenv("VERCEL") else "sqlite+aiosqlite:///./bakery.db")
+    DATABASE_SYNC_URL: str = os.getenv("DATABASE_SYNC_URL", "sqlite:////tmp/bakery.db" if os.getenv("VERCEL") else "sqlite:///./bakery.db")
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
